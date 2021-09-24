@@ -1,5 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
+
   before_action :set_team, only: %i[show edit update destroy]
 
   def index
@@ -15,7 +16,12 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    if current_user != @team.owner
+      flash.now[:error] = I18n.t('cannot_edit_not_admin')
+      render :show
+    end
+  end 
 
   def create
     @team = Team.new(team_params)
@@ -39,7 +45,7 @@ class TeamsController < ApplicationController
   end
 
   def destroy
-    @team.destroy
+    @team.destroy 
     redirect_to teams_url, notice: I18n.t('views.messages.delete_team')
   end
 
@@ -56,4 +62,5 @@ class TeamsController < ApplicationController
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
   end
+
 end
