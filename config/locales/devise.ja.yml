@@ -50,6 +50,7 @@ ja:
         greeting: "%{recipient}様"
         instruction: "次のリンクでメールアドレスの確認が完了します。"
         subject: "アカウントの有効化について"
+        views.messages.owner_change: "リーダ-が変更されました"
       email_changed:
         greeting: 
         message: 
