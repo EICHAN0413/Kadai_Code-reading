@@ -408,6 +408,7 @@ DEPENDENCIES
   rails (= 5.2.5)
   rails-controller-testing
   redcarpet (~> 3.5.1)
+  rexml
   rspec-parameterized
   rspec-rails
   rspec-retry
@@ -429,4 +430,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.1.4
+   2.2.11

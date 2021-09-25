@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: %i[show edit update destroy]
+
+  before_action :set_team, only: %i[show edit update destroy transfer]
 
   def index
     @teams = Team.all
@@ -15,7 +16,12 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    if current_user != @team.owner
+      flash.now[:error] = "権限がありません"
+      render :show
+    end
+  end 
 
   def create
     @team = Team.new(team_params)
@@ -38,8 +44,17 @@ class TeamsController < ApplicationController
     end
   end
 
+  def transfer
+    if @team.owner = User.find(params[:user_id])
+      if @team.save
+        TransferMailer.reader_mail(@team.owner.email).deliver
+        redirect_to team_path(@team.id)
+      end
+    end
+  end
+
   def destroy
-    @team.destroy
+    @team.destroy 
     redirect_to teams_url, notice: I18n.t('views.messages.delete_team')
   end
 
@@ -56,4 +71,5 @@ class TeamsController < ApplicationController
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
   end
+
 end
