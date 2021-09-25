@@ -16,4 +16,12 @@ class Team < ApplicationRecord
     assigns.create(user: user)
   end
 
+  def all_member_emails
+    self.members.map(&:email)
+  end
+
+  def deliver_agenda_destroy_mails
+    AgendaDestroyMailer.deliver_agenda_destroy_mail(self.all_member_emails)
+  end
+
 end
