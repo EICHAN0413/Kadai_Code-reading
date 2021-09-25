@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
 
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy transfer]
 
   def index
     @teams = Team.all
@@ -18,7 +18,7 @@ class TeamsController < ApplicationController
 
   def edit
     if current_user != @team.owner
-      flash.now[:error] = I18n.t('cannot_edit_not_admin')
+      flash.now[:error] = "権限がありません"
       render :show
     end
   end 
@@ -41,6 +41,15 @@ class TeamsController < ApplicationController
     else
       flash.now[:error] = I18n.t('views.messages.failed_to_save_team')
       render :edit
+    end
+  end
+
+  def transfer
+    if @team.owner = User.find(params[:user_id])
+      if @team.save
+        TransferMailer.reader_mail(@team.owner.email).deliver
+        redirect_to team_path(@team.id)
+      end
     end
   end
 
